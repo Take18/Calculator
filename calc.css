@@ -1,0 +1,64 @@
+#display{
+  width:495px;
+  background:#888;
+  height:110px;
+  line-height:110px;
+  font-size:80px;
+  text-align:right;
+  color:#fff;
+  box-shadow:1px 1px 0 #777;
+}
+
+.container{
+  width:500px;
+}
+
+.clear,.memories,.number,.operator,.equal,.selected,.memoried{
+  background:#aaa;
+  margin:5px 0 0 0;
+  height:90px;
+  line-height:90px;
+  text-align:center;
+  font-size:30px;
+  display:inline-block;
+  width:24%;
+  cursor:pointer;
+  box-shadow:1px 1px 0 #999;
+  user-select:none;
+}
+
+.clear{
+  background:yellow;
+}
+
+.memories{
+  background:#855;
+}
+
+.operator{
+  background:#33f;
+}
+
+.clear:hover,.memories:hover,.number:hover,
+.operator:hover,.equal:hover,.selected:hover,.memoried:hover{
+  opacity:0.5;
+}
+
+.clear:active,.memories:active,.number:active,
+.operator:active,.equal:active,.selected:active,.memoried:active{
+  opacity:0.3;
+  box-shadow:1px 1px 0 black;
+}
+
+.equal{
+  width:495px;
+  background:#f33;
+}
+
+.selected{
+  background:#f33;
+}
+
+.memoried{
+  background:#3f3;
+}
