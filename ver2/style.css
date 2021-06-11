@@ -1,0 +1,66 @@
+body {
+  width: 100%; }
+  body #main_container {
+    width: 495px;
+    margin: 0 auto;
+    padding-right: 0; }
+
+#display {
+  width: 100%;
+  height: 110px;
+  line-height: 110px;
+  font-size: 80px;
+  text-align: right;
+  background-color: #888;
+  color: white;
+  box-shadow: 1px 1px 0 #777; }
+
+#button_area {
+  width: 500px;
+  letter-spacing: -0.4em; }
+  #button_area .clear,
+  #button_area .memories,
+  #button_area .number,
+  #button_area .operator,
+  #button_area .equal {
+    width: 120px;
+    height: 90px;
+    line-height: 90px;
+    margin-right: 5px;
+    margin-top: 5px;
+    letter-spacing: 0;
+    display: inline-block;
+    text-align: center;
+    font-size: 30px;
+    cursor: pointer;
+    user-select: none;
+    background-color: gray;
+    box-shadow: 1px 1px 0 #999; }
+    #button_area .clear:hover,
+    #button_area .memories:hover,
+    #button_area .number:hover,
+    #button_area .operator:hover,
+    #button_area .equal:hover {
+      opacity: 0.5; }
+    #button_area .clear:active,
+    #button_area .memories:active,
+    #button_area .number:active,
+    #button_area .operator:active,
+    #button_area .equal:active {
+      opacity: 0.3;
+      box-shadow: 1px 1px 0 black; }
+  #button_area .clear {
+    background-color: yellow; }
+  #button_area .memories {
+    background-color: #855; }
+  #button_area .operator {
+    background-color: #33f; }
+  #button_area .equal {
+    width: 495px;
+    background-color: #f33; }
+  #button_area .memories.active {
+    background-color: #3f3; }
+  #button_area .operator.active {
+    background-color: #f33; }
+
+/*# sourceMappingURL=style.css.map */
