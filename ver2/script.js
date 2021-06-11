@@ -1,5 +1,6 @@
 'use strict';
 
+// DOM群
 const numbers = document.querySelectorAll( ".number" );
 const display = document.getElementById( "display" );
 const clear = document.getElementById( "clear" );
@@ -8,14 +9,19 @@ const equal = document.getElementById( "equal" );
 const memory = document.getElementById( "memory" );
 const memory_clear = document.getElementById( "memory_clear" );
 const memory_recall = document.getElementById( "memory_recall" );
-var operating = false;
-var pre_operate = false;
-var values = [ 0, 0 ];
-var waiting = true;
-var erroring = false;
-var memorying = 0;
-const error = "Too Large.";
-const error2 = "Invalid Calc.";
+
+// 状態変数群
+var operating = false; // 現在の演算の種類 Boolean or String
+var pre_operate = false; // ひとつ前の演算の種類 Boolean or String
+var values = [ 0, 0 ]; // 演算の引数 List of Number
+var waiting = true; // 待機状態 Boolean
+var erroring = false; // エラー Boolean
+var memorying = 0; // メモリ Number
+
+// 定数群
+const ERROR = "Too Large."; // 桁数オーバー
+const ERROR2 = "Invalid Calc."; // ゼロ除算
+const DIGIT = 10; // 最大桁数
 
 window.onload = function(){
 	Array.prototype.forEach.call( numbers, function(number){
@@ -27,7 +33,7 @@ window.onload = function(){
 	} );
 	equal.addEventListener( 'click', calculate, false );
 
-	// メモリーボタンが押されたら表示中の値を保存
+	// メモリ系
 	memory.addEventListener( 'click', saveMemory, false );
 	memory_clear.addEventListener( 'click', clearMemory, false );
 	memory_recall.addEventListener( 'click', showMemory, false );
@@ -40,21 +46,24 @@ function inputNumber(e) {
 	}
 	erroring = false;
 	if ( e.target.id === "" ) {
+		// 数字ボタン
 		if ( display.textContent === "0" ) {
 			display.textContent = e.target.textContent;
 		} else if ( display.textContent === "-0" ) {
 			display.textContent = "-" + e.target.textContent;
-		} else if ( display.textContent.length < 10 ) {
+		} else if ( display.textContent.length < DIGIT ) {
 			display.textContent += e.target.textContent;
 		}
 	} else if ( e.target.id === "dot" ) {
-		if ( display.textContent.indexOf('.') === -1 && display.textContent.length < 10 ) {
+		// 小数点ボタン
+		if ( display.textContent.indexOf('.') === -1 && display.textContent.length < DIGIT ) {
 			display.textContent += e.target.textContent;
 		}
 	} else if ( e.target.id === "minus" ) {
+		// マイナスボタン
 		if ( display.textContent.substr(0,1) === "-" ) {
 			display.textContent = display.textContent.substr(1);
-		} else if ( display.textContent.length < 10 ) {
+		} else if ( display.textContent.length < DIGIT ) {
 			display.textContent = "-" + display.textContent;
 		}
 	}
@@ -85,17 +94,19 @@ function calculate(e) {
 		if ( !pre_operate ) {
 			return;
 		}
+
+		// ひとつ前の演算を再度実行
 		let ans = "0";
 		values[0] = Number(display.textContent);
 		if ( pre_operate === "add" ) {
 			ans = String(values[0] + values[1]);
-			display.textContent = (ans.length>10) ? showError(1) : ans;
+			display.textContent = (ans.length>DIGIT) ? showError(1) : ans;
 		} else if ( pre_operate === "subtract" ) {
 			ans = String(values[0] - values[1]);
-			display.textContent = (ans.length>10) ? showError(1) : ans;
+			display.textContent = (ans.length>DIGIT) ? showError(1) : ans;
 		} else if ( pre_operate === "multiply" ) {
 			ans = String(values[0] * values[1]);
-			display.textContent = (ans.length>10) ? showError(1) : ans;
+			display.textContent = (ans.length>DIGIT) ? showError(1) : ans;
 		} else if ( pre_operate === "divide" ) {
 			ans = values[0] / values[1];
 			if ( String(ans).indexOf("e-") !== -1 ) {
@@ -103,22 +114,23 @@ function calculate(e) {
 			} else {
 				ans = String(ans);
 			}
-			display.textContent = (ans.length>10) ? ans.substr(0,10) : ans;
+			display.textContent = (ans.length>DIGIT) ? ans.substr(0,DIGIT) : ans;
 		}
 		if ( erroring ) pre_operate = false;
 		waiting = true;
 	} else {
+		// 演算実行
 		let ans = "0";
 		values[1] = Number(display.textContent);
 		if ( operating === "add" ) {
 			ans = String(values[0] + values[1]);
-			display.textContent = (ans.length>10) ? showError(1) : ans;
+			display.textContent = (ans.length>DIGIT) ? showError(1) : ans;
 		} else if ( operating === "subtract" ) {
 			ans = String(values[0] - values[1]);
-			display.textContent = (ans.length>10) ? showError(1) : ans;
+			display.textContent = (ans.length>DIGIT) ? showError(1) : ans;
 		} else if ( operating === "multiply" ) {
 			ans = String(values[0] * values[1]);
-			display.textContent = (ans.length>10) ? showError(1) : ans;
+			display.textContent = (ans.length>DIGIT) ? showError(1) : ans;
 		} else if ( operating === "divide" ) {
 			if ( display.textContent === "0" || display.textContent === "-0" ) {
 				display.textContent = showError(2);
@@ -129,7 +141,7 @@ function calculate(e) {
 				} else {
 					ans = String(ans);
 				}
-				display.textContent = (ans.length>10) ? ans.substr(0,10) : ans;
+				display.textContent = (ans.length>10) ? ans.substr(0,DIGIT) : ans;
 			}
 		}
 		document.getElementById( operating ).classList.remove("active");
@@ -139,6 +151,7 @@ function calculate(e) {
 	}
 }
 
+// メモリ保存
 function saveMemory(e) {
 	if ( erroring ) return;
 	memorying += Number(display.textContent);
@@ -147,6 +160,7 @@ function saveMemory(e) {
 	memory_recall.classList.add("active");
 }
 
+// メモリ消去
 function clearMemory(e) {
 	if ( !memory.classList.contains("active") ) return;
 	memorying = 0;
@@ -155,23 +169,25 @@ function clearMemory(e) {
 	memory_recall.classList.remove("active");
 }
 
+// メモリ表示
 function showMemory(e) {
 	if ( !memory.classList.contains("active") ) return;
 	erroring = false;
-	if ( memorying > 9999999999 ) {
+	if ( memorying >= Math.pow(10,DIGIT) ) {
 		display.textContent = showError(1);
 		operating = false;
 		pre_operate = false;
 		waiting = true;
 	} else if ( String(memorying).indexOf('e-') !== -1 ) {
-		display.textContent = Num2FracStr(memorying).substr(0,10);
-	} else if ( String(memorying).length > 10 ) {
-		display.textContent = String(memorying).substr(0,10);
+		display.textContent = Num2FracStr(memorying).substr(0,DIGIT);
+	} else if ( String(memorying).length > DIGIT ) {
+		display.textContent = String(memorying).substr(0,DIGIT);
 	} else {
 		display.textContent = String(memorying);
 	}
 }
 
+// 指数表示されてしまう数を非指数表示の文字列に変換
 // お借りしました：https://gist.github.com/sounisi5011/a5039aedd1c378971d966fa55a61f473
 function Num2FracStr(number) {
   /*
@@ -293,8 +309,9 @@ function Num2FracStr(number) {
   ) : "0";
 };
 
+// エラー
 function showError(kind) {
 	erroring = true;
-	if ( kind === 1 ) return error;
-	if ( kind === 2 ) return error2;
+	if ( kind === 1 ) return ERROR;
+	if ( kind === 2 ) return ERROR2;
 }
